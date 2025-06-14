@@ -1,3 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AndroidFinalProject</string>
+    <string name="login">Login</string>
+    <string name="login_hint">Enter your email</string>
+    <string name="password">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="login_button">Sign In</string>
 </resources>
