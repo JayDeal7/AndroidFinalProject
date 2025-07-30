@@ -41,7 +41,22 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
             Uri imageUri = data.getData();
             Log.d("MainActivity", "Received image URI: " + imageUri);
-            Toast.makeText(this, "Receipt captured!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Processing receipt...", Toast.LENGTH_SHORT).show();
+
+            OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
+                @Override
+                public void onTextExtracted(String result) {
+                    Log.d("OCR Result", result);
+                    Toast.makeText(MainActivity.this, "OCR complete! Check logs.", Toast.LENGTH_LONG).show();
+
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("OCR Error", "Failed to extract text", e);
+                    Toast.makeText(MainActivity.this, "Failed to process receipt.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
