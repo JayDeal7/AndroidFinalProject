@@ -47,8 +47,18 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onTextExtracted(String result) {
                     Log.d("OCR Result", result);
-                    Toast.makeText(MainActivity.this, "OCR complete! Check logs.", Toast.LENGTH_LONG).show();
 
+                    String vendor = ReceiptParser.extractVendor(result);
+                    String date = ReceiptParser.extractDate(result);
+                    String total = ReceiptParser.extractTotal(result);
+
+                    Log.d("Parsed Info", "Vendor: " + vendor);
+                    Log.d("Parsed Info", "Date: " + date);
+                    Log.d("Parsed Info", "Total: " + total);
+
+                    Toast.makeText(MainActivity.this, "Vendor: " + vendor + "\nDate: " + date + "\nTotal: $" + total, Toast.LENGTH_LONG).show();
+
+                    // TODO: Step 6 — Show this in a Review screen for editing/saving
                 }
 
                 @Override
