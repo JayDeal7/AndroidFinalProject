@@ -52,13 +52,18 @@ public class MainActivity extends AppCompatActivity {
                     String date = ReceiptParser.extractDate(result);
                     String total = ReceiptParser.extractTotal(result);
 
-                    Log.d("Parsed Info", "Vendor: " + vendor);
-                    Log.d("Parsed Info", "Date: " + date);
-                    Log.d("Parsed Info", "Total: " + total);
+                    //Log.d("Parsed Info", "Vendor: " + vendor);
+                    //Log.d("Parsed Info", "Date: " + date);
+                    //Log.d("Parsed Info", "Total: " + total);
 
-                    Toast.makeText(MainActivity.this, "Vendor: " + vendor + "\nDate: " + date + "\nTotal: $" + total, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(MainActivity.this, "Vendor: " + vendor + "\nDate: " + date + "\nTotal: $" + total, Toast.LENGTH_LONG).show();
 
-                    // TODO: Step 6 — Show this in a Review screen for editing/saving
+                    Intent intent = new Intent(MainActivity.this, ReviewReceiptActivity.class);
+                    intent.putExtra("vendor", vendor);
+                    intent.putExtra("date", date);
+                    intent.putExtra("total", total);
+                    startActivity(intent);
+
                 }
 
                 @Override
