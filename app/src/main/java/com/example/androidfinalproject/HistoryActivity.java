@@ -44,6 +44,14 @@ public class HistoryActivity extends AppCompatActivity {
 
         receiptRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         receiptRecyclerView.setAdapter(adapter);
+
+        FloatingActionButton addManualButton = findViewById(R.id.addManualButton);
+        addManualButton.setOnClickListener(v -> {
+            Intent intent = new Intent(HistoryActivity.this, EditReceiptActivity.class);
+            intent.putExtra("manual", true); // signal that it's a manual add
+            startActivity(intent);
+        });
+
     }
 
     private void loadReceipts() {

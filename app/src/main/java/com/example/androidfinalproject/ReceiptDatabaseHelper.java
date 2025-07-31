@@ -76,4 +76,13 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("receipt_table", "_id=?", new String[]{String.valueOf(id)});
     }
+
+    public void insertReceipt(String vendor, String date, double total) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("vendor", vendor);
+        cv.put("receipt_date", date);
+        cv.put("total", total);
+        db.insert("receipt_table", null, cv);
+    }
 }

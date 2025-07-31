@@ -23,6 +23,7 @@ public class EditReceiptActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        boolean isManual = getIntent().getBooleanExtra("manual", false);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_receipt);
@@ -58,5 +59,38 @@ public class EditReceiptActivity extends AppCompatActivity {
             dbHelper.deleteReceipt(id);
             finish();
         });
+
+        if (isManual) {
+            deleteButton.setVisibility(View.GONE);
+
+            updateButton.setText("Add Receipt");
+
+            updateButton.setOnClickListener(v -> {
+                String newVendor = editVendor.getText().toString();
+                String newDate = editDate.getText().toString();
+                double newTotal = Double.parseDouble(editTotal.getText().toString());
+                dbHelper.insertReceipt(newVendor, newDate, newTotal);
+                finish();
+            });
+        } else {
+            // Normal edit mode
+            editVendor.setText(getIntent().getStringExtra("vendor"));
+            editDate.setText(getIntent().getStringExtra("date"));
+            editTotal.setText(String.valueOf(getIntent().getDoubleExtra("total", 0)));
+            id = getIntent().getIntExtra("id", -1);
+
+            updateButton.setOnClickListener(v -> {
+                String newVendor = editVendor.getText().toString();
+                String newDate = editDate.getText().toString();
+                double newTotal = Double.parseDouble(editTotal.getText().toString());
+                dbHelper.updateReceipt(id, newVendor, newDate, newTotal);
+                finish();
+            });
+
+            deleteButton.setOnClickListener(v -> {
+                dbHelper.deleteReceipt(id);
+                finish();
+            });
+        }
     }
 }
