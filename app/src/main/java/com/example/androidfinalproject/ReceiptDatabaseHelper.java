@@ -63,5 +63,17 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    // (Optional) add update/delete methods later if needed
+    public void updateReceipt(int id, String vendor, String date, double total) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("vendor", vendor);
+        cv.put("receipt_date", date);
+        cv.put("total", total);
+        db.update("receipt_table", cv, "_id=?", new String[]{String.valueOf(id)});
+    }
+
+    public void deleteReceipt(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("receipt_table", "_id=?", new String[]{String.valueOf(id)});
+    }
 }

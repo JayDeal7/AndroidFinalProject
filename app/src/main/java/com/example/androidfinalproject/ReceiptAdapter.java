@@ -13,9 +13,11 @@ import java.util.List;
 public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptViewHolder> {
 
     private List<Receipt> receiptList;
+    private OnReceiptClickListener clickListener;
 
-    public ReceiptAdapter(List<Receipt> receiptList) {
+    public ReceiptAdapter(List<Receipt> receiptList, OnReceiptClickListener clickListener) {
         this.receiptList = receiptList;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -31,6 +33,8 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
         holder.vendorText.setText(receipt.vendor);
         holder.dateText.setText(receipt.date);
         holder.totalText.setText("$" + String.format("%.2f", receipt.total));
+
+        holder.itemView.setOnClickListener(v -> clickListener.onReceiptClick(receipt));
     }
 
     @Override
@@ -47,5 +51,9 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
             dateText = itemView.findViewById(R.id.dateText);
             totalText = itemView.findViewById(R.id.totalText);
         }
+    }
+
+    public interface OnReceiptClickListener {
+        void onReceiptClick(Receipt receipt);
     }
 }
