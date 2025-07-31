@@ -41,9 +41,18 @@ public class ReviewReceiptActivity extends AppCompatActivity {
                 if (v.isEmpty() || d.isEmpty() || t.isEmpty()) {
                     Toast.makeText(ReviewReceiptActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Step 7: Save to Room
-                    Toast.makeText(ReviewReceiptActivity.this, "Receipt saved (not really yet!)", Toast.LENGTH_SHORT).show();
-                    finish();
+                    double totalValue;
+                    try {
+                        totalValue = Double.parseDouble(t);
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(ReviewReceiptActivity.this, "Invalid total amount", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    ReceiptDatabaseHelper dbHelper = new ReceiptDatabaseHelper(ReviewReceiptActivity.this);
+                    dbHelper.addReceipt(v, d, totalValue);
+
+                    finish(); // go back to MainActivity or previous screen
                 }
             }
         });
