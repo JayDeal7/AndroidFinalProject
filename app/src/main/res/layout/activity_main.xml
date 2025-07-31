@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Welcome message -->
     <TextView
         android:id="@+id/welcomeText"
         android:layout_width="wrap_content"
@@ -16,7 +15,6 @@
         android:textSize="20sp"
         android:layout_centerInParent="true" />
 
-    <!-- Floating Action Button for Capture -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/captureButton"
         android:layout_width="wrap_content"
@@ -26,5 +24,14 @@
         android:layout_margin="24dp"
         android:contentDescription="@string/capture_receipt"
         app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:title="ScanExpense"
+        app:titleTextColor="@android:color/white" />
 
 </RelativeLayout>

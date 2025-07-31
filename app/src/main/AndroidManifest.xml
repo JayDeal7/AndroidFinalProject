@@ -19,9 +19,11 @@
         android:theme="@style/Theme.AndroidFinalProject"
         tools:targetApi="31">
         <activity
-            android:name=".ReviewReceiptActivity"
+            android:name=".HistoryActivity"
             android:exported="false" />
-        <!-- This is the screen launched when app starts -->
+        <activity
+            android:name=".ReviewReceiptActivity"
+            android:exported="false" /> <!-- This is the screen launched when app starts -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
