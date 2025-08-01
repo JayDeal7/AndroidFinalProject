@@ -1,6 +1,7 @@
 package com.example.androidfinalproject;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,10 +54,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_history) {
-            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            startActivity(new Intent(this, HistoryActivity.class));
             return true;
         } else if (item.getItemId() == R.id.action_dashboard) {
-            startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+            startActivity(new Intent(this, DashboardActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_export) {
+            exportReceiptsToCSV();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -98,4 +107,55 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void exportReceiptsToCSV() {
+        ReceiptDatabaseHelper dbHelper = new ReceiptDatabaseHelper(this);
+        Cursor cursor = dbHelper.readAllReceipts();
+
+        if (cursor.getCount() == 0) {
+            Toast.makeText(this, "No receipts to export.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder data = new StringBuilder();
+        data.append("ID,Vendor,Date,Total,Category\n");
+
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow("_id"));
+            String vendor = cursor.getString(cursor.getColumnIndexOrThrow("vendor"));
+            String date = cursor.getString(cursor.getColumnIndexOrThrow("receipt_date"));
+            double total = cursor.getDouble(cursor.getColumnIndexOrThrow("total"));
+            String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+            data.append(id).append(",")
+                    .append(vendor).append(",")
+                    .append(date).append(",")
+                    .append(total).append(",")
+                    .append(category).append("\n");
+        }
+
+        try {
+            File exportDir = new File(getExternalFilesDir(null), "exports");
+            if (!exportDir.exists()) exportDir.mkdirs();
+
+            File file = new File(exportDir, "receipts_export.csv");
+            FileWriter writer = new FileWriter(file);
+            writer.write(data.toString());
+            writer.close();
+
+            Toast.makeText(this, "Exported to: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+
+            // Optional: share the file
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/csv");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "My Receipts Export");
+            intent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(this, getPackageName() + ".provider", file));
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(intent, "Share CSV"));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Failed to export CSV", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

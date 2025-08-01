@@ -13,4 +13,10 @@
         android:icon="@android:drawable/ic_menu_gallery"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_export"
+        android:title="Export Receipts"
+        android:icon="@android:drawable/ic_menu_save"
+        app:showAsAction="never" />
+
 </menu>
