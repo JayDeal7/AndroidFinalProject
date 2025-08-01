@@ -13,13 +13,16 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
     private static final String DATABASE_NAME = "ScanExpense.db";
-    private static final int DATABASE_VERSION = 1;
+
+    // ⚠️ Increment version to trigger onUpgrade
+    private static final int DATABASE_VERSION = 2;
 
     private static final String TABLE_NAME = "receipt_table";
     private static final String COLUMN_ID = "_id";
     private static final String COLUMN_VENDOR = "vendor";
     private static final String COLUMN_DATE = "receipt_date";
     private static final String COLUMN_TOTAL = "total";
+    private static final String COLUMN_CATEGORY = "category";  // 👈 New column
 
     public ReceiptDatabaseHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,23 +35,26 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
                 COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_VENDOR + " TEXT, " +
                 COLUMN_DATE + " TEXT, " +
-                COLUMN_TOTAL + " REAL);";
+                COLUMN_TOTAL + " REAL, " +
+                COLUMN_CATEGORY + " TEXT);";
         db.execSQL(query);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Simple drop and recreate strategy — data loss if upgrading in production
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 
-    public void addReceipt(String vendor, String date, double total) {
+    public void addReceipt(String vendor, String date, double total, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
         cv.put(COLUMN_VENDOR, vendor);
         cv.put(COLUMN_DATE, date);
         cv.put(COLUMN_TOTAL, total);
+        cv.put(COLUMN_CATEGORY, category);
 
         long result = db.insert(TABLE_NAME, null, cv);
         if (result == -1) {
@@ -63,26 +69,24 @@ public class ReceiptDatabaseHelper extends SQLiteOpenHelper {
         return db.rawQuery("SELECT * FROM " + TABLE_NAME, null);
     }
 
-    public void updateReceipt(int id, String vendor, String date, double total) {
+    public void updateReceipt(int id, String vendor, String date, double total, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("vendor", vendor);
-        cv.put("receipt_date", date);
-        cv.put("total", total);
-        db.update("receipt_table", cv, "_id=?", new String[]{String.valueOf(id)});
+        cv.put(COLUMN_VENDOR, vendor);
+        cv.put(COLUMN_DATE, date);
+        cv.put(COLUMN_TOTAL, total);
+        cv.put(COLUMN_CATEGORY, category);
+
+        db.update(TABLE_NAME, cv, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
 
     public void deleteReceipt(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("receipt_table", "_id=?", new String[]{String.valueOf(id)});
+        db.delete(TABLE_NAME, COLUMN_ID + "=?", new String[]{String.valueOf(id)});
     }
 
-    public void insertReceipt(String vendor, String date, double total) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("vendor", vendor);
-        cv.put("receipt_date", date);
-        cv.put("total", total);
-        db.insert("receipt_table", null, cv);
+    // Optional alias for clarity (you can remove one if redundant)
+    public void insertReceipt(String vendor, String date, double total, String category) {
+        addReceipt(vendor, date, total, category);
     }
 }

@@ -23,6 +23,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <Spinner
+        android:padding="10dp"
+        android:id="@+id/categorySpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/receipt_categories"/>
+
+
     <Button
         android:id="@+id/updateButton"
         android:text="Update"

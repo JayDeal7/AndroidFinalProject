@@ -38,6 +38,7 @@ public class HistoryActivity extends AppCompatActivity {
                 intent.putExtra("vendor", receipt.vendor);
                 intent.putExtra("date", receipt.date);
                 intent.putExtra("total", receipt.total);
+                intent.putExtra("category", receipt.category);
                 startActivity(intent);
             }
         });
@@ -62,7 +63,8 @@ public class HistoryActivity extends AppCompatActivity {
                 String vendor = cursor.getString(cursor.getColumnIndexOrThrow("vendor"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("receipt_date"));
                 double total = cursor.getDouble(cursor.getColumnIndexOrThrow("total"));
-                receiptList.add(new Receipt(id, vendor, date, total));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
+                receiptList.add(new Receipt(id, vendor, date, total, category));
             } while (cursor.moveToNext());
             cursor.close();
         }
