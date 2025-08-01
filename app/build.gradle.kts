@@ -50,4 +50,6 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
 
     implementation(libs.mlkit.text.recognition)
+    implementation("com.github.PhilJay:MPAndroidChart:v3.0.3")
+    //implementation(libs.mpandroidchart)
 }

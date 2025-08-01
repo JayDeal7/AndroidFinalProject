@@ -48,13 +48,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_history) {
-            // Launch the HistoryActivity
-            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.action_dashboard) {
+            startActivity(new Intent(MainActivity.this, DashboardActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -19,6 +19,9 @@
         android:theme="@style/Theme.AndroidFinalProject"
         tools:targetApi="31">
         <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+        <activity
             android:name=".EditReceiptActivity"
             android:exported="false" />
         <activity
