@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,7 @@ public class ReceiptAdapter extends RecyclerView.Adapter<ReceiptAdapter.ReceiptV
         holder.totalText.setText("$" + String.format("%.2f", receipt.total));
 
         holder.itemView.setOnClickListener(v -> clickListener.onReceiptClick(receipt));
+
     }
 
     @Override

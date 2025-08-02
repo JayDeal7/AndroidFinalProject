@@ -7,8 +7,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
+import androidx.cardview.widget.CardView;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import androidx.appcompat.app.AlertDialog;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,25 +28,68 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 101;
-    FloatingActionButton captureButton;
+    //FloatingActionButton captureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Scanner
+        CardView cardScanner = findViewById(R.id.cardScanner);
+        cardScanner.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            intent.putExtra("mode", "SCAN");
+            startActivity(intent);
+        });
+
+        // OCR demo
+        CardView cardOcr = findViewById(R.id.cardOcr);
+        cardOcr.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            intent.putExtra("mode", "OCR");
+            startActivity(intent);
+        });
+
+        // Auto Categorization (now implemented)
+        CardView cardAutoCategory = findViewById(R.id.cardAutoCategory);
+        cardAutoCategory.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, AutoCategorizationActivity.class))
+        );
+
+        // Expense History
+        CardView cardExpenseHistory = findViewById(R.id.cardExpenseHistory);
+        cardExpenseHistory.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class))
+        );
+
+        // Analytics Dashboard
+        CardView cardAnalyticsDashboard = findViewById(R.id.cardAnalyticsDashboard);
+        cardAnalyticsDashboard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, DashboardActivity.class))
+        );
+
+        // Spending Limit Alerts (settings screen so alerts can trigger)
+        CardView cardSpendingLimitAlerts = findViewById(R.id.cardSpendingLimitAlerts);
+        cardSpendingLimitAlerts.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, SpendingLimitActivity.class))
+        );
+
+        // Calendar Entries (now implemented)
+        CardView cardCalendarEntries = findViewById(R.id.cardCalendarEntries);
+        cardCalendarEntries.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, CalendarEntriesActivity.class))
+        );
+
+
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
-        captureButton = findViewById(R.id.captureButton);
-
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                startActivityForResult(intent, CAMERA_REQUEST_CODE);
-            }
-        });
+        /*captureButton = findViewById(R.id.captureButton);
+        captureButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
+        });*/
     }
 
     @Override
@@ -53,16 +100,48 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_history) {
+        int id = item.getItemId();
+
+        /*if (id == R.id.action_history) {
             startActivity(new Intent(this, HistoryActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.action_dashboard) {
+
+        } else if (id == R.id.action_dashboard) {
             startActivity(new Intent(this, DashboardActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.action_export) {
+
+        } else if (id == R.id.action_export) {
             exportReceiptsToCSV();
             return true;
+
+        } else */
+        if (id == R.id.action_help) {
+
+            // Load authors & instructions
+            String authors      = getString(R.string.help_dialog_author);
+            String instructions = getString(R.string.help_dialog_instructions);
+
+            // Fetch app version
+            String version;
+            try {
+                version = getPackageManager()
+                        .getPackageInfo(getPackageName(), 0)
+                        .versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                version = "1.0";
+            }
+
+            // Show Help dialog
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.help_dialog_title) + " v" + version)
+                    .setMessage(authors
+                            + "\n\nVersion: " + version
+                            + "\n\n" + instructions)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -79,24 +158,15 @@ public class MainActivity extends AppCompatActivity {
             OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
                 @Override
                 public void onTextExtracted(String result) {
-                    Log.d("OCR Result", result);
-
                     String vendor = ReceiptParser.extractVendor(result);
                     String date = ReceiptParser.extractDate(result);
                     String total = ReceiptParser.extractTotal(result);
-
-                    //Log.d("Parsed Info", "Vendor: " + vendor);
-                    //Log.d("Parsed Info", "Date: " + date);
-                    //Log.d("Parsed Info", "Total: " + total);
-
-                    //Toast.makeText(MainActivity.this, "Vendor: " + vendor + "\nDate: " + date + "\nTotal: $" + total, Toast.LENGTH_LONG).show();
 
                     Intent intent = new Intent(MainActivity.this, ReviewReceiptActivity.class);
                     intent.putExtra("vendor", vendor);
                     intent.putExtra("date", date);
                     intent.putExtra("total", total);
                     startActivity(intent);
-
                 }
 
                 @Override
@@ -144,7 +214,6 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Exported to: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-            // Optional: share the file
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/csv");
             intent.putExtra(Intent.EXTRA_SUBJECT, "My Receipts Export");
@@ -157,5 +226,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to export CSV", Toast.LENGTH_SHORT).show();
         }
     }
-
 }
