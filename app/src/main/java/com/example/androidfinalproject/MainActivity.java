@@ -9,6 +9,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.cardview.widget.CardView;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import androidx.appcompat.app.AlertDialog;
+
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,7 +28,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_REQUEST_CODE = 101;
-    FloatingActionButton captureButton;
+    //FloatingActionButton captureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,22 +81,15 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, CalendarEntriesActivity.class))
         );
 
-        // Smart Location Logging (unchanged placeholder)
-        CardView cardSmartLocationLogging = findViewById(R.id.cardSmartLocationLogging);
-        cardSmartLocationLogging.setOnClickListener(v ->
-                Toast.makeText(MainActivity.this,
-                        "Smart Location Logging coming soon!",
-                        Toast.LENGTH_SHORT).show()
-        );
 
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
-        captureButton = findViewById(R.id.captureButton);
+        /*captureButton = findViewById(R.id.captureButton);
         captureButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CameraActivity.class);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
-        });
+        });*/
     }
 
     @Override
@@ -103,18 +100,51 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_history) {
+        int id = item.getItemId();
+
+        /*if (id == R.id.action_history) {
             startActivity(new Intent(this, HistoryActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.action_dashboard) {
+
+        } else if (id == R.id.action_dashboard) {
             startActivity(new Intent(this, DashboardActivity.class));
             return true;
-        } else if (item.getItemId() == R.id.action_export) {
+
+        } else if (id == R.id.action_export) {
             exportReceiptsToCSV();
             return true;
+
+        } else */
+        if (id == R.id.action_help) {
+
+            // Load authors & instructions
+            String authors      = getString(R.string.help_dialog_author);
+            String instructions = getString(R.string.help_dialog_instructions);
+
+            // Fetch app version
+            String version;
+            try {
+                version = getPackageManager()
+                        .getPackageInfo(getPackageName(), 0)
+                        .versionName;
+            } catch (PackageManager.NameNotFoundException e) {
+                version = "1.0";
+            }
+
+            // Show Help dialog
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.help_dialog_title) + " v" + version)
+                    .setMessage(authors
+                            + "\n\nVersion: " + version
+                            + "\n\n" + instructions)
+                    .setPositiveButton(android.R.string.ok, null)
+                    .show();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

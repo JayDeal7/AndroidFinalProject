@@ -234,40 +234,10 @@
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
-        <!-- Smart Location Logging feature card -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardSmartLocationLogging"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="8dp"
-            app:layout_columnWeight="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:src="@drawable/ic_smart_location_logging"
-                    android:contentDescription="@string/smart_location_logging"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/smart_location_logging"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
     </androidx.gridlayout.widget.GridLayout>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/captureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -275,7 +245,7 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="24dp"
         android:contentDescription="@string/capture_receipt"
-        app:srcCompat="@android:drawable/ic_menu_camera" />
+        app:srcCompat="@android:drawable/ic_menu_camera" /> -->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/mainToolbar"
