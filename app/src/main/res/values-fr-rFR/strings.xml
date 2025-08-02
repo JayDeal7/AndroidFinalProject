@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ProjetFinalAndroid</string>
+    <string name="login">Connexion</string>
+    <string name="login_hint">Entrez votre email</string>
+    <string name="password">Mot de passe</string>
+    <string name="password_hint">Entrez votre mot de passe</string>
+    <string name="login_button">Se connecter</string>
+
+    <string name="welcome_message">Bienvenue sur ScanExpense</string>
+    <string name="capture_receipt">Capturer un reçu</string>
+    <string name="capture">Capturer</string>
+
+    <string-array name="receipt_categories">
+        <item>Non catégorisé</item>
+        <item>Nourriture</item>
+        <item>Voyage</item>
+        <item>Jeux</item>
+        <item>Électronique</item>
+        <item>Vêtements</item>
+        <item>Santé</item>
+        <item>Autre</item>
+    </string-array>
+
+    <string-array name="reminder_minutes">
+        <item>0</item>
+        <item>10</item>
+        <item>60</item>
+        <item>1440</item> <!-- 1 jour -->
+    </string-array>
+
+    <string name="scanner">Scanner un reçu</string>
+    <string name="ocr">Extraire le texte</string>
+    <string name="auto_category">Catégorisation automatique</string>
+    <string name="expense_history">Historique des dépenses</string>
+    <string name="analytics_dashboard">Tableau de bord analytique</string>
+    <string name="spending_limit_alerts">Alertes de limite de dépenses</string>
+    <string name="calendar_entries">Événements du calendrier</string>
+    <string name="menu_export_pdf">Exporter en PDF</string>
+
+    <!-- Menu item -->
+    <string name="menu_help">Aide</string>
+
+    <!-- Dialog title -->
+    <string name="help_dialog_title">Aide</string>
+
+    <!-- Authors -->
+    <string name="help_dialog_author">
+        Auteurs : Vignan Cheepurupalli, Jay Deal, Dileep Kumar Mycharla, Ram Prasad Janarthanan
+    </string>
+
+    <!-- Dialog instructions -->
+    <string name="help_dialog_instructions">
+        • Scanner un reçu : prendre une photo d\'une facture.\n
+        • Extraire le texte : lancer l’OCR sur l’image capturée.\n
+        • Catégorisation automatique : suggère une catégorie ; appuyez sur Enregistrer pour sauvegarder.\n
+        • Historique : appui long sur une entrée pour la supprimer ; menu → Exporter en PDF.\n
+        • Tableau de bord : visualisez les tendances de dépenses.\n
+        • Utilisez le bouton “+” pour ajouter un reçu manuellement.\n
+        • Alertes de dépenses : définissez un seuil de dépenses ; vous recevrez une notification si vous le dépassez.\n
+        • Événements du calendrier : ajoute automatiquement des rappels ou dates limites à votre calendrier.
+    </string>
+</resources>
