@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 import androidx.cardview.widget.CardView;
 
@@ -32,107 +31,67 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Scanner
         CardView cardScanner = findViewById(R.id.cardScanner);
-        cardScanner.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Launch your existing camera flow
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                intent.putExtra("mode", "SCAN");
-                startActivity(intent);
-            }
+        cardScanner.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            intent.putExtra("mode", "SCAN");
+            startActivity(intent);
         });
 
+        // OCR demo
         CardView cardOcr = findViewById(R.id.cardOcr);
-        cardOcr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Launch the camera + OCR processing
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                intent.putExtra("mode", "OCR");
-                startActivity(intent);
-            }
+        cardOcr.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            intent.putExtra("mode", "OCR");
+            startActivity(intent);
         });
 
-        // Auto-Categorization stub
+        // Auto Categorization (now implemented)
         CardView cardAutoCategory = findViewById(R.id.cardAutoCategory);
-        cardAutoCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,
-                                "Auto-Categorization coming soon!",
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        cardAutoCategory.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, AutoCategorizationActivity.class))
+        );
 
         // Expense History
         CardView cardExpenseHistory = findViewById(R.id.cardExpenseHistory);
-        cardExpenseHistory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
-                startActivity(intent);
-            }
-        });
+        cardExpenseHistory.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class))
+        );
 
         // Analytics Dashboard
         CardView cardAnalyticsDashboard = findViewById(R.id.cardAnalyticsDashboard);
-        cardAnalyticsDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
-                startActivity(intent);
-            }
-        });
+        cardAnalyticsDashboard.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, DashboardActivity.class))
+        );
 
-        // Spending Limit Alerts stub
+        // Spending Limit Alerts (settings screen so alerts can trigger)
         CardView cardSpendingLimitAlerts = findViewById(R.id.cardSpendingLimitAlerts);
-        cardSpendingLimitAlerts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,
-                                "Spending Limit Alerts coming soon!",
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        cardSpendingLimitAlerts.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, SpendingLimitActivity.class))
+        );
 
-        // Calendar Entries stub
+        // Calendar Entries (now implemented)
         CardView cardCalendarEntries = findViewById(R.id.cardCalendarEntries);
-        cardCalendarEntries.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(MainActivity.this,
-                                "Calendar Entries coming soon!",
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+        cardCalendarEntries.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, CalendarEntriesActivity.class))
+        );
 
-        // Smart Location Logging stub
+        // Smart Location Logging (unchanged placeholder)
         CardView cardSmartLocationLogging = findViewById(R.id.cardSmartLocationLogging);
-        cardSmartLocationLogging.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        cardSmartLocationLogging.setOnClickListener(v ->
                 Toast.makeText(MainActivity.this,
-                                "Smart Location Logging coming soon!",
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
+                        "Smart Location Logging coming soon!",
+                        Toast.LENGTH_SHORT).show()
+        );
 
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);
 
         captureButton = findViewById(R.id.captureButton);
-
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-                startActivityForResult(intent, CAMERA_REQUEST_CODE);
-            }
+        captureButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
         });
     }
 
@@ -157,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -170,24 +128,15 @@ public class MainActivity extends AppCompatActivity {
             OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
                 @Override
                 public void onTextExtracted(String result) {
-                    Log.d("OCR Result", result);
-
                     String vendor = ReceiptParser.extractVendor(result);
                     String date = ReceiptParser.extractDate(result);
                     String total = ReceiptParser.extractTotal(result);
-
-                    //Log.d("Parsed Info", "Vendor: " + vendor);
-                    //Log.d("Parsed Info", "Date: " + date);
-                    //Log.d("Parsed Info", "Total: " + total);
-
-                    //Toast.makeText(MainActivity.this, "Vendor: " + vendor + "\nDate: " + date + "\nTotal: $" + total, Toast.LENGTH_LONG).show();
 
                     Intent intent = new Intent(MainActivity.this, ReviewReceiptActivity.class);
                     intent.putExtra("vendor", vendor);
                     intent.putExtra("date", date);
                     intent.putExtra("total", total);
                     startActivity(intent);
-
                 }
 
                 @Override
@@ -235,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Exported to: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
 
-            // Optional: share the file
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/csv");
             intent.putExtra(Intent.EXTRA_SUBJECT, "My Receipts Export");
@@ -248,5 +196,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "Failed to export CSV", Toast.LENGTH_SHORT).show();
         }
     }
-
 }

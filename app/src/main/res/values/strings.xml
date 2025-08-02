@@ -21,6 +21,14 @@
         <item>Health</item>
         <item>Other</item>
     </string-array>
+    <!-- add inside <resources> ... -->
+    <string-array name="reminder_minutes">
+        <item>0</item>
+        <item>10</item>
+        <item>60</item>
+        <item>1440</item> <!-- 1 day -->
+    </string-array>
+
 
     <string name="scanner">Scan Receipt</string>
     <string name="ocr">Extract Text</string>

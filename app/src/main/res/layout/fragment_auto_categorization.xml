@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Vendor"/>
+    <EditText android:id="@+id/editVendor" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textCapWords"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Date" android:layout_marginTop="12dp"/>
+    <EditText android:id="@+id/editDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="YYYY-MM-DD" android:inputType="text"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Total" android:layout_marginTop="12dp"/>
+    <EditText android:id="@+id/editTotal" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="numberDecimal"/>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Category" android:layout_marginTop="12dp"/>
+    <Spinner android:id="@+id/categorySpinner" android:layout_width="match_parent" android:layout_height="wrap_content" android:entries="@array/receipt_categories"/>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:gravity="end" android:orientation="horizontal">
+        <Button android:id="@+id/btnRescan" android:text="Rescan" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        <Button android:id="@+id/btnSave" android:text="Save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="12dp" />
+    </LinearLayout>
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Recent (last 5)" android:layout_marginTop="20dp" android:textStyle="bold"/>
+
+    <ProgressBar android:id="@+id/auto_list_progress" style="?android:attr/progressBarStyleLarge" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:visibility="gone" android:layout_marginTop="8dp"/>
+
+    <ListView android:id="@+id/recentList" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:dividerHeight="1dp" android:layout_marginTop="8dp"/>
+</LinearLayout>

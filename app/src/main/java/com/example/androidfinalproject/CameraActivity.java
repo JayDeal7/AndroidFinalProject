@@ -35,89 +35,43 @@ public class CameraActivity extends AppCompatActivity {
     private ImageCapture imageCapture;
     private ExecutorService cameraExecutor;
     private String mode;
+    private boolean returnResult; // NEW
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        // Read which flow to run: SCAN vs OCR
         mode = getIntent().getStringExtra("mode");
         if (mode == null) mode = "SCAN";
-        Toast.makeText(this, "Camera mode: " + mode, Toast.LENGTH_LONG).show();
+        returnResult = getIntent().getBooleanExtra("return_result", false); // NEW
 
         previewView = findViewById(R.id.previewView);
         Button captureButton = findViewById(R.id.captureButton);
 
-        // Request camera permission if needed
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    this,
-                    new String[]{android.Manifest.permission.CAMERA},
-                    100
-            );
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 100);
         } else {
             startCamera();
         }
 
         cameraExecutor = Executors.newSingleThreadExecutor();
-
         captureButton.setOnClickListener(view -> takePhoto());
     }
 
-    private void runTextRecognition(Uri imageUri) {
-        // Kick off OCR
-        OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
-            @Override
-            public void onTextExtracted(String result) {
-                // Show the result and only finish when user taps OK
-                new AlertDialog.Builder(CameraActivity.this)
-                        .setTitle("Extracted Text")
-                        .setMessage(result)
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            // Now finish the activity
-                            CameraActivity.this.finish();
-                        })
-                        .setCancelable(false)  // prevent dismissing by tapping outside
-                        .show();
-            }
-
-            @Override
-            public void onError(Exception e) {
-                new AlertDialog.Builder(CameraActivity.this)
-                        .setTitle("OCR Error")
-                        .setMessage(e.getMessage())
-                        .setPositiveButton("OK", (dialog, which) -> {
-                            CameraActivity.this.finish();
-                        })
-                        .setCancelable(false)
-                        .show();
-            }
-        });
-    }
-
-
     private void startCamera() {
-        ListenableFuture<ProcessCameraProvider> cameraProviderFuture =
-                ProcessCameraProvider.getInstance(this);
-
+        ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(() -> {
             try {
                 ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-
                 Preview preview = new Preview.Builder().build();
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
-
                 imageCapture = new ImageCapture.Builder().build();
-
                 CameraSelector cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA;
 
                 cameraProvider.unbindAll();
-                cameraProvider.bindToLifecycle(
-                        this, cameraSelector, preview, imageCapture
-                );
-
+                cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture);
             } catch (Exception e) {
                 Log.e("CameraX", "Camera start failed", e);
             }
@@ -143,11 +97,16 @@ public class CameraActivity extends AppCompatActivity {
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         Uri savedUri = Uri.fromFile(photoFile);
                         Log.d("CameraX", "Photo saved: " + savedUri);
-                        Log.d("CameraActivity", "Mode is: " + mode);
+                        Log.d("CameraActivity", "Mode=" + mode + ", returnResult=" + returnResult);
 
                         if ("OCR".equals(mode)) {
-                            runTextRecognition(savedUri);
-                            return;  // skip returning to MainActivity
+                            // If Auto-Categorization asked for a result, return it; else show dialog (friend’s demo)
+                            if (returnResult) {
+                                runTextRecognitionReturn(savedUri);
+                            } else {
+                                runTextRecognitionDialog(savedUri);
+                            }
+                            return;
                         }
 
                         // SCAN flow: launch ReviewReceiptActivity
@@ -165,24 +124,53 @@ public class CameraActivity extends AppCompatActivity {
         );
     }
 
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode,
-            @NonNull String[] permissions,
-            @NonNull int[] grantResults
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    // OLD behavior for OCR card: show dialog, then finish
+    private void runTextRecognitionDialog(Uri imageUri) {
+        OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
+            @Override public void onTextExtracted(String result) {
+                new AlertDialog.Builder(CameraActivity.this)
+                        .setTitle("Extracted Text")
+                        .setMessage(result)
+                        .setPositiveButton("OK", (dialog, which) -> finish())
+                        .setCancelable(false)
+                        .show();
+            }
+            @Override public void onError(Exception e) {
+                new AlertDialog.Builder(CameraActivity.this)
+                        .setTitle("OCR Error")
+                        .setMessage(e.getMessage())
+                        .setPositiveButton("OK", (dialog, which) -> finish())
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+    }
 
-        if (requestCode == 100 &&
-                grantResults.length > 0 &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    // NEW behavior for Auto-Categorization: return OCR text to caller (no dialog)
+    private void runTextRecognitionReturn(Uri imageUri) {
+        OcrProcessor.extractTextFromImage(this, imageUri, new OcrProcessor.OcrCallback() {
+            @Override public void onTextExtracted(String result) {
+                Intent data = new Intent();
+                data.putExtra("ocr_text", result);
+                setResult(RESULT_OK, data);
+                finish();
+            }
+            @Override public void onError(Exception e) {
+                Intent data = new Intent();
+                data.putExtra("ocr_text", "");
+                setResult(RESULT_OK, data);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             startCamera();
         } else {
-            Toast.makeText(
-                    this,
-                    "Camera permission is required to use this feature",
-                    Toast.LENGTH_LONG
-            ).show();
+            Toast.makeText(this, "Camera permission is required to use this feature", Toast.LENGTH_LONG).show();
             finish();
         }
     }
