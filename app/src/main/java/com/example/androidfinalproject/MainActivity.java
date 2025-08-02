@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+import androidx.cardview.widget.CardView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,6 +31,96 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        CardView cardScanner = findViewById(R.id.cardScanner);
+        cardScanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch your existing camera flow
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                intent.putExtra("mode", "SCAN");
+                startActivity(intent);
+            }
+        });
+
+        CardView cardOcr = findViewById(R.id.cardOcr);
+        cardOcr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Launch the camera + OCR processing
+                Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+                intent.putExtra("mode", "OCR");
+                startActivity(intent);
+            }
+        });
+
+        // Auto-Categorization stub
+        CardView cardAutoCategory = findViewById(R.id.cardAutoCategory);
+        cardAutoCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,
+                                "Auto-Categorization coming soon!",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // Expense History
+        CardView cardExpenseHistory = findViewById(R.id.cardExpenseHistory);
+        cardExpenseHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Analytics Dashboard
+        CardView cardAnalyticsDashboard = findViewById(R.id.cardAnalyticsDashboard);
+        cardAnalyticsDashboard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, DashboardActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        // Spending Limit Alerts stub
+        CardView cardSpendingLimitAlerts = findViewById(R.id.cardSpendingLimitAlerts);
+        cardSpendingLimitAlerts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,
+                                "Spending Limit Alerts coming soon!",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // Calendar Entries stub
+        CardView cardCalendarEntries = findViewById(R.id.cardCalendarEntries);
+        cardCalendarEntries.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,
+                                "Calendar Entries coming soon!",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+
+        // Smart Location Logging stub
+        CardView cardSmartLocationLogging = findViewById(R.id.cardSmartLocationLogging);
+        cardSmartLocationLogging.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this,
+                                "Smart Location Logging coming soon!",
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.mainToolbar);
         setSupportActionBar(toolbar);

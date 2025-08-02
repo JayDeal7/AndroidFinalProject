@@ -1,5 +1,6 @@
 package com.example.androidfinalproject;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -39,6 +40,30 @@ public class ReviewReceiptActivity extends AppCompatActivity {
         String vendor = getIntent().getStringExtra("vendor");
         String date = getIntent().getStringExtra("date");
         String total = getIntent().getStringExtra("total");
+
+        if (vendor == null || vendor.isEmpty()) {
+            String uriStr = getIntent().getStringExtra("image_uri"); // key sent by CameraActivity
+            if (uriStr != null) {
+                Uri imgUri = Uri.parse(uriStr);
+
+                OcrProcessor.extractTextFromImage(this, imgUri,
+                        new OcrProcessor.OcrCallback() {
+                            @Override public void onTextExtracted(String result) {
+                                String v = ReceiptParser.extractVendor(result);
+                                String d = ReceiptParser.extractDate(result);
+                                String t = ReceiptParser.extractTotal(result);
+
+                                editVendor.setText(v);
+                                editDate.setText(d);
+                                editTotal.setText(t);
+                            }
+                            @Override public void onError(Exception e) {
+                                Toast.makeText(ReviewReceiptActivity.this,
+                                        "OCR failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        }
 
         editVendor.setText(vendor);
         editDate.setText(date);

@@ -52,4 +52,6 @@ dependencies {
     implementation(libs.mlkit.text.recognition)
     implementation("com.github.PhilJay:MPAndroidChart:v3.0.3")
     //implementation(libs.mpandroidchart)
+    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation("androidx.cardview:cardview:1.0.0")
 }
